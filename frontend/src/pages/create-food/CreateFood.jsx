@@ -388,31 +388,90 @@ const CreateFood = () => {
             setSuccessMessage('')
 
 
-            const formData =
+            const credentialsResponse =
+                await api.get(
+                    '/api/food/upload-credentials',
+                    {
+                        withCredentials: true
+                    }
+                )
+
+
+            const {
+                token,
+                expire,
+                signature,
+                publicKey
+            } = credentialsResponse.data.credentials
+
+
+            const uploadData =
                 new FormData()
 
 
-            formData.append(
-                'name',
-                name.trim()
-            )
-
-
-            formData.append(
-                'description',
-                description.trim()
-            )
-
-
-            formData.append(
-                'video',
+            uploadData.append(
+                'file',
                 videoFile
             )
+
+            uploadData.append(
+                'fileName',
+                videoFile.name
+            )
+
+            uploadData.append(
+                'publicKey',
+                publicKey
+            )
+
+            uploadData.append(
+                'signature',
+                signature
+            )
+
+            uploadData.append(
+                'expire',
+                expire
+            )
+
+            uploadData.append(
+                'token',
+                token
+            )
+
+
+            const imagekitResponse =
+                await fetch(
+                    'https://upload.imagekit.io/api/v1/files/upload',
+                    {
+                        method: 'POST',
+                        body: uploadData
+                    }
+                )
+
+
+            const imagekitResult =
+                await imagekitResponse.json()
+
+
+            if (!imagekitResponse.ok) {
+
+                throw new Error(
+                    imagekitResult.message ||
+                    'Video upload failed'
+                )
+
+            }
 
 
             await api.post(
                 '/api/food',
-                formData,
+                {
+                    name: name.trim(),
+                    description: description.trim(),
+                    videoUrl: imagekitResult.url,
+                    fileId: imagekitResult.fileId
+                },
                 {
                     withCredentials: true
                 }
