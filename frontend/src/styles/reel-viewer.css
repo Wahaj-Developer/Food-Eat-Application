@@ -1,0 +1,681 @@
+/* =========================================
+   REEL VIEWER
+========================================= */
+
+.reel-viewer {
+    position: fixed;
+    inset: 0;
+
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 0, 0, 0.92);
+}
+
+
+/* =========================================
+   BACKDROP
+========================================= */
+
+.reel-viewer-backdrop {
+    position: absolute;
+    inset: 0;
+
+    z-index: 0;
+
+    background: rgba(0, 0, 0, 0.75);
+
+    /*
+     * Important:
+     * The backdrop should never block
+     * clicks on the viewer buttons.
+     */
+    pointer-events: none;
+}
+
+
+/* =========================================
+   VIEWER CONTENT
+========================================= */
+
+.reel-viewer-content {
+    position: relative;
+
+    width: min(100vw, 600px);
+    height: 100dvh;
+
+    z-index: 2;
+
+    background: #000;
+
+    overflow: hidden;
+}
+
+
+/* =========================================
+   VIDEO
+========================================= */
+
+.reel-viewer-video {
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 1;
+
+    display: block;
+
+    object-fit: contain;
+
+    background: #000;
+}
+
+
+/* =========================================
+   GRADIENT
+========================================= */
+
+.reel-viewer-gradient {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 2;
+
+    /*
+     * Important:
+     * Gradient must not block
+     * mouse/touch interaction.
+     */
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0.3) 0%,
+            transparent 25%,
+            transparent 55%,
+            rgba(0, 0, 0, 0.8) 100%
+        );
+}
+
+
+/* =========================================
+   CLOSE BUTTON
+========================================= */
+
+.reel-viewer-close {
+    position: fixed;
+
+    top: 20px;
+    right: 25px;
+
+    width: 44px;
+    height: 44px;
+
+    z-index: 10001;
+
+    border: 1px solid
+        rgba(255, 255, 255, 0.2);
+
+    border-radius: 50%;
+
+    background:
+        rgba(0, 0, 0, 0.5);
+
+    color: #fff;
+
+    font-size: 22px;
+
+    cursor: pointer;
+
+    display: grid;
+    place-items: center;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+
+    pointer-events: auto;
+}
+
+
+.reel-viewer-close:hover {
+    background:
+        rgba(0, 0, 0, 0.8);
+
+    transform: scale(1.05);
+}
+
+
+.reel-viewer-close:active {
+    transform: scale(0.95);
+}
+
+
+/* =========================================
+   NAVIGATION BUTTONS
+========================================= */
+
+.reel-viewer-navigation {
+    position: fixed;
+
+    z-index: 10001;
+
+    width: 44px;
+    height: 44px;
+
+    border: 1px solid
+        rgba(255, 255, 255, 0.2);
+
+    border-radius: 50%;
+
+    background:
+        rgba(0, 0, 0, 0.5);
+
+    color: #fff;
+
+    font-size: 24px;
+
+    cursor: pointer;
+
+    display: grid;
+    place-items: center;
+
+    pointer-events: auto;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.reel-viewer-navigation:hover {
+    background:
+        rgba(0, 0, 0, 0.8);
+}
+
+
+.reel-viewer-prev {
+    left: 25px;
+
+    top: 50%;
+
+    transform:
+        translateY(-50%);
+}
+
+
+.reel-viewer-next {
+    right: 25px;
+
+    top: 50%;
+
+    transform:
+        translateY(-50%);
+}
+
+
+.reel-viewer-prev:hover {
+    transform:
+        translateY(-50%)
+        scale(1.05);
+}
+
+
+.reel-viewer-next:hover {
+    transform:
+        translateY(-50%)
+        scale(1.05);
+}
+
+
+.reel-viewer-prev:active,
+.reel-viewer-next:active {
+    transform:
+        translateY(-50%)
+        scale(0.95);
+}
+
+
+/* =========================================
+   ACTIONS CONTAINER
+========================================= */
+
+.reel-viewer-actions {
+    position: absolute;
+
+    right: 18px;
+    bottom: 110px;
+
+    z-index: 50;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 18px;
+
+    pointer-events: auto;
+}
+
+
+/* =========================================
+   ACTION GROUP
+========================================= */
+
+.reel-viewer-action-group {
+    position: relative;
+
+    z-index: 50;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 5px;
+
+    color: #fff;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    pointer-events: auto;
+}
+
+
+/* =========================================
+   ACTION BUTTON
+========================================= */
+
+.reel-viewer-action {
+    position: relative;
+
+    width: 48px;
+    height: 48px;
+
+    z-index: 51;
+
+    border: 1px solid
+        rgba(255, 255, 255, 0.2);
+
+    border-radius: 50%;
+
+    background:
+        rgba(0, 0, 0, 0.45);
+
+    backdrop-filter: blur(5px);
+
+    color: #fff;
+
+    display: grid;
+
+    place-items: center;
+
+    cursor: pointer;
+
+    pointer-events: auto;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.reel-viewer-action:hover {
+    background:
+        rgba(0, 0, 0, 0.7);
+
+    transform: scale(1.08);
+}
+
+
+.reel-viewer-action:active {
+    transform: scale(0.95);
+}
+
+
+.reel-viewer-action:disabled {
+    cursor: not-allowed;
+
+    opacity: 0.6;
+
+    pointer-events: none;
+}
+
+
+/* =========================================
+   LIKE STATE
+========================================= */
+
+.reel-viewer-action.liked {
+    color: #ff3040;
+}
+
+
+/* =========================================
+   SAVE STATE
+========================================= */
+
+.reel-viewer-action.saved {
+    color: #ffd54a;
+}
+
+
+/* =========================================
+   ACTION SVG
+========================================= */
+
+.reel-viewer-action svg {
+    width: 24px;
+    height: 24px;
+
+    display: block;
+
+    pointer-events: none;
+}
+
+
+/* =========================================
+   VIDEO INFORMATION
+========================================= */
+
+.reel-viewer-info {
+    position: absolute;
+
+    left: 20px;
+    right: 90px;
+
+    bottom: 30px;
+
+    z-index: 50;
+
+    color: #fff;
+
+    /*
+     * Information should not block
+     * buttons or video interaction.
+     */
+    pointer-events: none;
+}
+
+
+/* =========================================
+   VIDEO TITLE
+========================================= */
+
+.reel-viewer-info h2 {
+    margin: 0 0 8px;
+
+    font-size: 1.2rem;
+
+    font-weight: 700;
+}
+
+
+/* =========================================
+   VIDEO DESCRIPTION
+========================================= */
+
+.reel-viewer-info p {
+    margin: 0;
+
+    font-size: 0.95rem;
+
+    line-height: 1.4;
+
+    display: -webkit-box;
+
+    -webkit-line-clamp: 3;
+
+    -webkit-box-orient: vertical;
+
+    overflow: hidden;
+}
+
+
+/* =========================================
+   VIDEO COUNTER
+========================================= */
+
+.reel-viewer-counter {
+    display: inline-block;
+
+    margin-top: 10px;
+
+    font-size: 0.8rem;
+
+    color:
+        rgba(255, 255, 255, 0.7);
+}
+
+
+/* =========================================
+   DESKTOP
+========================================= */
+
+@media (min-width: 701px) {
+
+    .reel-viewer-content {
+        width: min(600px, 100vw);
+
+        height: 100dvh;
+    }
+
+
+    .reel-viewer-actions {
+        right: 18px;
+
+        bottom: 110px;
+
+        z-index: 50;
+    }
+
+
+    .reel-viewer-navigation {
+        display: grid;
+    }
+
+
+    .reel-viewer-close {
+        display: grid;
+    }
+}
+
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (min-width: 701px) and (max-width: 1000px) {
+
+    .reel-viewer-navigation {
+        width: 42px;
+        height: 42px;
+    }
+
+
+    .reel-viewer-prev {
+        left: 15px;
+    }
+
+
+    .reel-viewer-next {
+        right: 15px;
+    }
+
+
+    .reel-viewer-close {
+        right: 15px;
+        top: 15px;
+    }
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 700px) {
+
+    .reel-viewer-content {
+        width: 100vw;
+
+        height: 100dvh;
+    }
+
+
+    /* -----------------------------------------
+       CLOSE
+    ----------------------------------------- */
+
+    .reel-viewer-close {
+        top: 15px;
+
+        right: 15px;
+
+        width: 42px;
+
+        height: 42px;
+    }
+
+
+    /* -----------------------------------------
+       HIDE DESKTOP NAVIGATION
+    ----------------------------------------- */
+
+    .reel-viewer-navigation {
+        display: none;
+    }
+
+
+    /* -----------------------------------------
+       ACTIONS
+    ----------------------------------------- */
+
+    .reel-viewer-actions {
+        right: 12px;
+
+        bottom: 120px;
+
+        z-index: 50;
+
+        gap: 16px;
+    }
+
+
+    .reel-viewer-action {
+        width: 46px;
+
+        height: 46px;
+    }
+
+
+    /* -----------------------------------------
+       INFORMATION
+    ----------------------------------------- */
+
+    .reel-viewer-info {
+        left: 15px;
+
+        right: 75px;
+
+        bottom: 25px;
+    }
+
+
+    .reel-viewer-info h2 {
+        font-size: 1.1rem;
+    }
+
+
+    .reel-viewer-info p {
+        font-size: 0.9rem;
+    }
+}
+
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media (max-width: 400px) {
+
+    .reel-viewer-actions {
+        right: 8px;
+
+        bottom: 105px;
+
+        gap: 14px;
+    }
+
+
+    .reel-viewer-action {
+        width: 44px;
+
+        height: 44px;
+    }
+
+
+    .reel-viewer-action svg {
+        width: 22px;
+
+        height: 22px;
+    }
+
+
+    .reel-viewer-info {
+        left: 12px;
+
+        right: 65px;
+
+        bottom: 20px;
+    }
+
+
+    .reel-viewer-info h2 {
+        font-size: 1rem;
+    }
+
+
+    .reel-viewer-info p {
+        font-size: 0.85rem;
+    }
+}
+
+
+/* =========================================
+   VERY SMALL SCREENS
+========================================= */
+
+@media (max-width: 320px) {
+
+    .reel-viewer-actions {
+        right: 6px;
+
+        bottom: 95px;
+    }
+
+
+    .reel-viewer-action {
+        width: 42px;
+
+        height: 42px;
+    }
+
+
+    .reel-viewer-info {
+        left: 10px;
+
+        right: 60px;
+
+        bottom: 18px;
+    }
+}

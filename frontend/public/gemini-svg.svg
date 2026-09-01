@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 110" width="100%" height="100%">
+  <g transform="translate(10, 10)">
+    <!-- "FOOD" in Dark Charcoal Vector Paths -->
+    <g fill="#2B2B2B">
+      <!-- F -->
+      <path d="M 0 0 H 22 V 7 H 7 V 15 H 20 V 22 H 7 V 36 H 0 Z"/>
+      <!-- O -->
+      <path d="M 26 18 C 26 7, 33 0, 43 0 C 53 0, 60 7, 60 18 C 60 29, 53 36, 43 36 C 33 36, 26 29, 26 18 Z M 34 18 C 34 24, 38 29, 43 29 C 48 29, 52 24, 52 18 C 52 12, 48 7, 43 7 C 38 7, 34 12, 34 18 Z"/>
+      <!-- O -->
+      <path d="M 64 18 C 64 7, 71 0, 81 0 C 91 0, 98 7, 98 18 C 98 29, 91 36, 81 36 C 71 36, 64 29, 64 18 Z M 72 18 C 72 24, 76 29, 81 29 C 86 29, 90 24, 90 18 C 90 12, 86 7, 81 7 C 76 7, 72 12, 72 18 Z"/>
+      <!-- D -->
+      <path d="M 102 0 H 116 C 127 0, 134 7, 134 18 C 134 29, 127 36, 116 36 H 102 Z M 109 7 V 29 H 116 C 122 29, 126 24, 126 18 C 126 12, 122 7, 116 7 Z"/>
+    </g>
+
+    <!-- "EAT" in Pink/Magenta Vector Paths -->
+    <g fill="#D80068">
+      <!-- E -->
+      <path d="M 144 0 H 166 V 7 H 151 V 14 H 164 V 21 H 151 V 29 H 166 V 36 H 144 Z"/>
+      <!-- A -->
+      <path d="M 170 36 L 181 0 H 191 L 202 36 H 194 L 191 27 H 181 L 178 36 Z M 183 20 H 189 L 186 9 Z"/>
+      <!-- T -->
+      <path d="M 204 0 H 226 V 7 H 218 V 36 H 211 V 7 H 204 Z"/>
+    </g>
+
+    <!-- ARROW GRAFFITI CURVE -->
+    <path
+      d="M 10 52 C 45 82, 135 87, 205 58 C 213 54, 219 50, 223 45"
+      stroke="#D80068"
+      stroke-width="6"
+      stroke-linecap="round"
+      fill="none"
+    />
+
+    <!-- ARROW HEAD -->
+    <path
+      d="M 205 42 L 225 45 L 211 60"
+      stroke="#D80068"
+      stroke-width="6"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      fill="none"
+    />
+  </g>
+</svg>

@@ -1,0 +1,211 @@
+@import './theme.css';
+
+
+/* =====================================================
+   LOADING PAGE
+===================================================== */
+
+.loading-page {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 9999;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        radial-gradient(
+            900px 500px at 10% -10%,
+            var(--color-surface-alt),
+            transparent 60%
+        ),
+        radial-gradient(
+            900px 500px at 100% 100%,
+            var(--color-surface-alt),
+            transparent 60%
+        ),
+        var(--color-bg);
+
+    color:
+        var(--color-text);
+}
+
+
+/* =====================================================
+   CONTENT
+===================================================== */
+
+.loading-content {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+    animation:
+        loading-fade-in .4s ease;
+}
+
+
+/* =====================================================
+   LOGO
+===================================================== */
+
+.loading-logo {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin-bottom: 20px;
+}
+
+
+.loading-logo .food-view-logo {
+
+    transform:
+        scale(.9);
+
+    transform-origin:
+        center;
+}
+
+
+/* =====================================================
+   SPINNER
+===================================================== */
+
+.loading-spinner {
+
+    width: 34px;
+
+    height: 34px;
+
+    position: relative;
+
+    border-radius: 50%;
+
+    border:
+        3px solid
+        color-mix(
+            in srgb,
+            var(--color-accent) 15%,
+            transparent
+        );
+
+    border-top-color:
+        var(--color-accent);
+
+    animation:
+        loading-spin .8s linear infinite;
+}
+
+
+/* =====================================================
+   MESSAGE
+===================================================== */
+
+.loading-message {
+
+    margin:
+        18px 0 0;
+
+    color:
+        var(--color-text-secondary);
+
+    font-size:
+        .85rem;
+
+    font-weight:
+        600;
+
+    letter-spacing:
+        .02em;
+}
+
+
+/* =====================================================
+   ANIMATIONS
+===================================================== */
+
+@keyframes loading-spin {
+
+    to {
+
+        transform:
+            rotate(360deg);
+
+    }
+
+}
+
+
+@keyframes loading-fade-in {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(6px);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0);
+
+    }
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 600px) {
+
+    .loading-logo .food-view-logo {
+
+        transform:
+            scale(.72);
+
+    }
+
+
+    .loading-spinner {
+
+        width:
+            30px;
+
+        height:
+            30px;
+
+    }
+
+
+    .loading-message {
+
+        font-size:
+            .8rem;
+
+    }
+
+}

@@ -1,0 +1,622 @@
+@import './theme.css';
+
+/* Page container ensures full viewport and background */
+.reels-page {
+  height: 100dvh;
+  background: var(--color-bg);
+  overflow: hidden; /* parent hides overscroll glow on iOS */
+}
+
+/* Vertical feed with snap scrolling */
+.reels-feed {
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+
+    scroll-snap-type: y mandatory;
+    scroll-snap-stop: always;
+
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+}
+.reel {
+    position: relative;
+    height: 100dvh;
+    width: 100%;
+
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+
+    background: #000;
+}
+.reel-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    background: #000;
+}
+
+/* Overlay: content sits on top of video */
+.reel-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end; /* content near bottom */
+  pointer-events: none; /* allow click-through except controls */
+}
+
+/* Subtle top-to-bottom gradient so text is readable on any video */
+.reel-overlay-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+    rgba(0,0,0,0.25) 0%,
+    rgba(0,0,0,0.05) 30%,
+    rgba(0,0,0,0.35) 65%,
+    rgba(0,0,0,0.65) 100%
+  );
+}
+
+.reel-content {
+  position: relative;
+  width: 100%;
+  padding: var(--space-6);
+  padding-bottom: calc(env(safe-area-inset-bottom, 0) + 72px); /* make space for bottom nav */
+  display: flex;
+  flex-direction: column;
+  padding-right: 4.5rem;
+  gap: var(--space-4);
+  pointer-events: auto; /* enable button click */
+}
+
+/* Truncated to two lines */
+.reel-description {
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,.4);
+  font-size: 1rem;
+  line-height: 1.3;
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-width: 90ch;
+}
+
+.reel-btn {
+  align-self: flex-start;
+  background: var(--color-accent);
+  color: #fff;
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-weight: 700;
+  letter-spacing: .3px;
+  text-decoration: none;
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition-base), background var(--transition-base), box-shadow var(--transition-base);
+}
+
+.reel-btn:hover { background: var(--color-accent-hover); }
+.reel-btn:active { transform: translateY(1px); }
+.reel-btn:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+/* Desktop tweaks */
+@media (min-width: 768px) {
+  .reel-content { padding: 36px; }
+  .reel-description { font-size: 1.05rem; max-width: 70ch; }
+}
+
+/* Right-side vertical actions (like, bookmark, comments) */
+.reel-actions {
+  position: absolute;
+  right: clamp(20px, 8vw, 120px);
+  bottom: 200px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  pointer-events: auto;
+}
+
+.reel-action {
+  width: 52px;
+  height: 52px;
+
+  border-radius: 50%;
+
+  display: grid;
+  place-items: center;
+
+  background: color-mix(in srgb, #000 42%, transparent);
+  backdrop-filter: blur(4px);
+
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+
+  transition:
+    transform var(--transition-base),
+    background var(--transition-base);
+}
+
+.reel-action svg {
+  width: 24px;
+  height: 24px;
+}
+.reel-action:active { transform: translateY(1px); }
+
+.reel-action__count {
+  color: #fff;
+  text-align: center;
+  font-size: 12px;
+}
+
+.reel-action-group{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: #fff;
+}
+
+.empty-state{
+  position: absolute; inset: 0; display: grid; place-items: center; color: #fff;
+}
+
+/* =========================================================
+   BRAND OVERLAY (TOP BAR)
+   ========================================================= */
+/*
+   Sits above the feed like Instagram/TikTok's top bar.
+   pointer-events: none so it never blocks swipes/taps
+   on the video underneath it.
+*/
+
+.reels-top-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+
+  height: 88px;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+
+  pointer-events: none;
+}
+
+.reels-top-bar-gradient {
+  position: absolute;
+  inset: 0;
+
+  background: linear-gradient(180deg,
+    rgba(0,0,0,0.60) 0%,
+    rgba(0,0,0,0.28) 55%,
+    rgba(0,0,0,0) 100%
+  );
+}
+
+.reels-top-bar-content {
+  position: relative;
+
+  padding-top: calc(env(safe-area-inset-top, 0px) + 14px);
+}
+
+/* Recolor the shared brand logo for the dark video background */
+
+.reels-logo-wrap .food-view-logo {
+  margin-bottom: 0;
+  transform: scale(0.5);
+  transform-origin: top center;
+}
+
+.reels-logo-wrap .food-word {
+  color: #ffffff;
+}
+
+.reels-logo-wrap .eat-word {
+  color: var(--color-accent);
+}
+
+.reels-logo-wrap .food-view-arrow {
+  color: var(--color-accent);
+}
+
+@media (min-width: 768px) {
+
+  .reels-logo-wrap .food-view-logo {
+    transform: scale(0.6);
+  }
+
+}
+
+
+/* =========================================================
+   VIDEO TITLE
+   ========================================================= */
+/*
+   Previously unstyled - inherited the default dark
+   body text color and was almost invisible against
+   the black video. Now matches the description's
+   white + shadow treatment, just bolder.
+*/
+
+.reel-content h3 {
+  margin: 0 0 4px;
+
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0,0,0,.5);
+
+  font-size: 1.12rem;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   ACTION BUTTON POLISH
+   ========================================================= */
+
+.reel-action {
+  background: color-mix(in srgb, #000 42%, transparent);
+  border-color: rgba(255,255,255,.18);
+  box-shadow: 0 2px 10px rgba(0,0,0,.25);
+  transition: transform var(--transition-base), background var(--transition-base);
+}
+
+.reel-action:hover {
+  background: color-mix(in srgb, #000 60%, transparent);
+  transform: translateY(-1px);
+}
+
+.reel-action.liked {
+  color: #ff3b5c;
+  border-color: rgba(255,59,92,.35);
+}
+
+.reel-action.saved {
+  color: #ffd54a;
+  border-color: rgba(255,213,74,.35);
+}
+
+.reel-action__count {
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0,0,0,.4);
+}
+
+
+/* =========================================================
+   STORE BUTTON POLISH
+   ========================================================= */
+
+.reel-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 14px rgba(215, 15, 100, 0.35);
+}
+
+
+/* =========================================================
+   DESCRIPTION POLISH
+   ========================================================= */
+
+.reel-description {
+  font-weight: 500;
+  color: rgba(255,255,255,0.88);
+  text-shadow: 0 1px 3px rgba(0,0,0,.45);
+}
+
+
+/* =========================================================
+   STORE BUTTON - REFINED
+   ========================================================= */
+
+.reel-btn {
+  margin-top: 2px;
+
+  padding: 9px 18px 9px 14px;
+
+  font-size: 0.85rem;
+
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base),
+    background var(--transition-base);
+}
+
+.reel-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(215, 15, 100, 0.45);
+}
+
+.reel-btn:active {
+  transform: translateY(0);
+}
+
+
+/* =========================================================
+   FIX: BUTTON CRAMPED AGAINST BOTTOM NAV
+   ========================================================= */
+/*
+   72px of reserved space wasn't enough once title +
+   description + the store button stack up - the button
+   ended up sitting flush against the bottom nav with no
+   breathing room. Giving it more clearance and its own
+   top margin.
+*/
+
+.reel-content {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0) + 104px);
+  gap: var(--space-2);
+}
+
+.reel-content h3 {
+  margin-bottom: 2px;
+}
+
+.reel-btn {
+  margin-top: 10px;
+}
+/* =========================================================
+   REEL ACTIONS - RESPONSIVE
+   ========================================================= */
+@media (max-width: 767px) {
+  .reel-actions {
+    right: 16px;
+    bottom: 290px;
+    gap: 14px;
+  }
+
+  .reel-action {
+    width: 50px;
+    height: 50px;
+  }
+
+  .reel-action svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+@media (min-width: 768px) {
+  .reel-actions {
+    right: 40px;
+  }
+
+  .reel-action {
+    width: 52px;
+    height: 52px;
+  }
+
+  .reel-action svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* =========================================
+   DEMO NOTICE
+========================================= */
+
+.demo-notice {
+
+    position: fixed;
+
+    top: 72px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: calc(100% - 32px);
+    max-width: 520px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    padding: 12px 14px;
+
+    background: rgba(255, 255, 255, 0.96);
+
+    border: 1px solid rgba(0, 0, 0, 0.08);
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.12);
+
+    z-index: 1000;
+
+    box-sizing: border-box;
+
+    backdrop-filter: blur(8px);
+
+}
+
+
+/* =========================================
+   CONTENT
+========================================= */
+
+.demo-notice__content {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    min-width: 0;
+
+}
+
+
+/* =========================================
+   ICON
+========================================= */
+
+.demo-notice__icon {
+
+    flex-shrink: 0;
+
+    width: 26px;
+    height: 26px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #fff0f6;
+
+    color: #d4145a;
+
+    font-size: 15px;
+
+    font-weight: 800;
+
+}
+
+
+/* =========================================
+   TEXT
+========================================= */
+
+.demo-notice__text {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 2px;
+
+    min-width: 0;
+
+}
+
+
+.demo-notice__text strong {
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    color: #333;
+
+}
+
+
+.demo-notice__text span {
+
+    font-size: 12px;
+
+    line-height: 1.4;
+
+    color: #707070;
+
+}
+
+
+/* =========================================
+   CLOSE BUTTON
+========================================= */
+
+.demo-notice__close {
+
+    flex-shrink: 0;
+
+    width: 28px;
+    height: 28px;
+
+    padding: 0;
+
+    border: none;
+
+    background: transparent;
+
+    color: #777;
+
+    font-size: 22px;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+}
+
+
+.demo-notice__close:hover {
+
+    background: #f5f5f5;
+
+    color: #333;
+
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 600px) {
+
+    .demo-notice {
+
+        top: 62px;
+
+        width: calc(100% - 20px);
+
+        padding: 10px 11px;
+
+    }
+
+
+    .demo-notice__text strong {
+
+        font-size: 12px;
+
+    }
+
+
+    .demo-notice__text span {
+
+        font-size: 11px;
+
+    }
+
+
+    .demo-notice__icon {
+
+        width: 24px;
+        height: 24px;
+
+        font-size: 14px;
+
+    }
+
+}
