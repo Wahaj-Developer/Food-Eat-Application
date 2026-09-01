@@ -1,53 +1,27 @@
 const express = require('express')
-
-const foodController =
-    require('../controllers/food.controller')
-
-const authMiddleware =
-    require('../middlewares/auth.middleware')
-
-const multer =
-    require('multer')
+const foodController =require('../controllers/food.controller')
+const authMiddleware = require('../middlewares/auth.middleware')
 
 
-const router =
-    express.Router()
+const router = express.Router()
 
-
-const upload =
-    multer({
-        storage:
-            multer.memoryStorage()
-    })
-
-
-/**
- * =========================================
- * CREATE FOOD
- * =========================================
- *
- * POST /api/food
- *
- * Food Partner only
- */
 
 router.post(
     '/',
     authMiddleware.authFoodPartnerMiddleware,
-    upload.single('video'),
     foodController.createFood
 )
 
 
-/**
- * =========================================
- * GET ALL FOOD
- * =========================================
- *
- * GET /api/food
- *
- * User only
- */
+
+router.get(
+    '/upload-credentials',
+    authMiddleware.authFoodPartnerMiddleware,
+    foodController.getUploadCredentials
+)
+
+
+
 
 router.get(
     '/',
@@ -56,16 +30,6 @@ router.get(
 )
 
 
-/**
- * =========================================
- * DELETE FOOD
- * =========================================
- *
- * DELETE /api/food/:id
- *
- * Food Partner only
- */
-
 router.delete(
     '/:id',
     authMiddleware.authFoodPartnerMiddleware,
@@ -73,11 +37,7 @@ router.delete(
 )
 
 
-/**
- * =========================================
- * LIKE / UNLIKE
- * =========================================
- */
+
 
 router.post(
     '/like',
@@ -86,11 +46,6 @@ router.post(
 )
 
 
-/**
- * =========================================
- * SAVE / UNSAVE
- * =========================================
- */
 
 router.post(
     '/save',
@@ -99,11 +54,7 @@ router.post(
 )
 
 
-/**
- * =========================================
- * GET SAVED FOOD
- * =========================================
- */
+
 
 router.get(
     '/save',
