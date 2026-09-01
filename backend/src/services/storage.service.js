@@ -7,12 +7,6 @@ const client = new ImageKit({
 })
 
 
-/**
- * =========================================
- * UPLOAD FILE
- * =========================================
- */
-
 async function uploadFile(file, fileName) {
 
     const result =
@@ -62,11 +56,34 @@ async function deleteFile(fileId) {
     return result
 }
 
+/**
+ * =========================================
+ * GET UPLOAD CREDENTIALS
+ * =========================================
+ *
+ * Generates short-lived credentials so the
+ * browser can upload directly to ImageKit.
+ */
+
+function getUploadAuthParams() {
+
+    const authParams =
+        client.helper.getAuthenticationParameters()
+
+
+    return {
+
+        ...authParams,
+
+        publicKey:
+            process.env.IMAGEKIT_PUBLIC_KEY
+
+    }
+
+}
 
 module.exports = {
-
     uploadFile,
-
-    deleteFile
-
+    deleteFile,
+    getUploadAuthParams
 }
