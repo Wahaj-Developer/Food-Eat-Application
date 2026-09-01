@@ -2,19 +2,8 @@ const foodModel = require('../models/food.model')
 const storageService =require('../services/storage.service')
 const likeModel = require('../models/likes.model')
 const saveModel =require('../models/save.model')
-const { randomUUID } =require('crypto')
 
 
-
-/**
- * =========================================
- * CREATE FOOD
- * =========================================
- *
- * POST /api/food
- *
- * Food Partner only
- */
 
 async function createFood(req, res) {
 
@@ -32,7 +21,9 @@ async function createFood(req, res) {
         }
 
 
-        if (!req.file) {
+        const { videoUrl, fileId } = req.body
+
+        if (!videoUrl || !fileId) {
 
             return res.status(400).json({
 
@@ -42,13 +33,6 @@ async function createFood(req, res) {
             })
 
         }
-
-
-        const fileUploadResult =
-            await storageService.uploadFile(
-                req.file.buffer,
-                randomUUID()
-            )
 
 
         const foodItem =
@@ -61,10 +45,10 @@ async function createFood(req, res) {
                     req.body.description || '',
 
                 video:
-                    fileUploadResult.url,
+                    videoUrl,
 
                 fileId:
-                    fileUploadResult.fileId,
+                    fileId,
 
                 foodPartner:
                     req.foodPartner._id,
@@ -101,6 +85,67 @@ async function createFood(req, res) {
 
             message:
                 'Failed to create food item'
+
+        })
+
+    }
+
+}
+
+
+
+/**
+ * =========================================
+ * GET UPLOAD CREDENTIALS
+ * =========================================
+ *
+ * GET /api/food/upload-credentials
+ *
+ * Food Partner only
+ */
+
+async function getUploadCredentials(req, res) {
+
+    try {
+
+        if (!req.foodPartner) {
+
+            return res.status(401).json({
+
+                message:
+                    'Food partner authentication required'
+
+            })
+
+        }
+
+
+        const credentials =
+            storageService.getUploadAuthParams()
+
+
+        return res.status(200).json({
+
+            message:
+                'Upload credentials generated successfully',
+
+            credentials
+
+        })
+
+
+    } catch (error) {
+
+        console.error(
+            'Get upload credentials error:',
+            error
+        )
+
+
+        return res.status(500).json({
+
+            message:
+                'Failed to generate upload credentials'
 
         })
 
@@ -814,6 +859,8 @@ module.exports = {
 
     saveFood,
 
-    getSavedFood
+    getSavedFood,
+
+    getUploadCredentials
 
 }
