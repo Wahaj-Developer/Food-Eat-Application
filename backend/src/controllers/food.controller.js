@@ -1,21 +1,8 @@
-const foodModel =
-    require('../models/food.model')
-
-
-const storageService =
-    require('../services/storage.service')
-
-
-const likeModel =
-    require('../models/likes.model')
-
-
-const saveModel =
-    require('../models/save.model')
-
-
-const { v4: uuidv4 } =
-    require('uuid')
+const foodModel = require('../models/food.model')
+const storageService =require('../services/storage.service')
+const likeModel = require('../models/likes.model')
+const saveModel =require('../models/save.model')
+const { randomUUID } =require('crypto')
 
 
 
@@ -60,7 +47,7 @@ async function createFood(req, res) {
         const fileUploadResult =
             await storageService.uploadFile(
                 req.file.buffer,
-                uuidv4()
+                randomUUID()
             )
 
 
@@ -123,15 +110,6 @@ async function createFood(req, res) {
 
 
 
-/**
- * =========================================
- * GET ALL FOOD ITEMS
- * =========================================
- *
- * GET /api/food
- *
- * Logged-in User
- */
 
 async function getFoodItems(req, res) {
 
@@ -229,15 +207,6 @@ async function getFoodItems(req, res) {
 
 
 
-/**
- * =========================================
- * DELETE FOOD
- * =========================================
- *
- * DELETE /api/food/:id
- *
- * Food Partner only
- */
 
 async function deleteFood(req, res) {
 
@@ -297,11 +266,7 @@ async function deleteFood(req, res) {
         }
 
 
-        /*
-         * Make sure the food belongs
-         * to the logged-in food partner.
-         */
-
+  
         if (
             food.foodPartner.toString() !==
             foodPartner._id.toString()
@@ -316,10 +281,6 @@ async function deleteFood(req, res) {
 
         }
 
-
-        // =========================================
-        // DELETE FROM IMAGEKIT
-        // =========================================
 
         if (food.fileId) {
 
@@ -349,10 +310,7 @@ async function deleteFood(req, res) {
         }
 
 
-        // =========================================
-        // DELETE LIKES
-        // =========================================
-
+  
         await likeModel.deleteMany({
 
             food:
@@ -361,10 +319,7 @@ async function deleteFood(req, res) {
         })
 
 
-        // =========================================
-        // DELETE SAVES
-        // =========================================
-
+  
         await saveModel.deleteMany({
 
             food:
@@ -373,10 +328,7 @@ async function deleteFood(req, res) {
         })
 
 
-        // =========================================
-        // DELETE FOOD
-        // =========================================
-
+        
         await foodModel.deleteOne({
 
             _id:
@@ -417,11 +369,6 @@ async function deleteFood(req, res) {
 
 
 
-/**
- * =========================================
- * LIKE / UNLIKE FOOD
- * =========================================
- */
 
 async function likeFood(req, res) {
 
@@ -477,9 +424,7 @@ async function likeFood(req, res) {
             })
 
 
-        // =========================================
-        // UNLIKE
-        // =========================================
+     
 
         if (isAlreadyLiked) {
 
@@ -605,12 +550,6 @@ async function likeFood(req, res) {
 
 
 
-/**
- * =========================================
- * SAVE / UNSAVE FOOD
- * =========================================
- */
-
 async function saveFood(req, res) {
 
     try {
@@ -623,9 +562,7 @@ async function saveFood(req, res) {
             req.user
 
 
-        // =========================================
-        // VALIDATE FOOD ID
-        // =========================================
+        
 
         if (!foodId) {
 
@@ -639,10 +576,7 @@ async function saveFood(req, res) {
         }
 
 
-        // =========================================
-        // CHECK FOOD
-        // =========================================
-
+      
         const food =
             await foodModel.findById(
                 foodId
@@ -661,9 +595,7 @@ async function saveFood(req, res) {
         }
 
 
-        // =========================================
-        // CHECK EXISTING SAVE
-        // =========================================
+     
 
         const existingSave =
             await saveModel.findOne({
@@ -677,16 +609,9 @@ async function saveFood(req, res) {
             })
 
 
-        // =========================================
-        // UNSAVE
-        // =========================================
-
         if (existingSave) {
 
-            /*
-             * Remove ALL duplicate save records
-             * for this user and this food.
-             */
+           
 
             await saveModel.deleteMany({
 
@@ -699,11 +624,7 @@ async function saveFood(req, res) {
             })
 
 
-            /*
-             * Count the REAL number of saves
-             * remaining for this food.
-             */
-
+ 
             const realSavesCount =
                 await saveModel.countDocuments({
 
@@ -713,10 +634,7 @@ async function saveFood(req, res) {
                 })
 
 
-            /*
-             * Synchronize savesCount with
-             * the actual save documents.
-             */
+        
 
             const updatedFood =
                 await foodModel.findByIdAndUpdate(
@@ -753,10 +671,7 @@ async function saveFood(req, res) {
         }
 
 
-        // =========================================
-        // SAVE
-        // =========================================
-
+        
         await saveModel.create({
 
             user:
@@ -780,10 +695,6 @@ async function saveFood(req, res) {
 
             })
 
-
-        /*
-         * Synchronize savesCount.
-         */
 
         const updatedFood =
             await foodModel.findByIdAndUpdate(
@@ -839,12 +750,6 @@ async function saveFood(req, res) {
 
 
 
-/**
- * =========================================
- * GET SAVED FOOD
- * =========================================
- */
-
 async function getSavedFood(req, res) {
 
     try {
@@ -895,11 +800,7 @@ async function getSavedFood(req, res) {
 
 
 
-/**
- * =========================================
- * EXPORT CONTROLLERS
- * =========================================
- */
+
 
 module.exports = {
 
