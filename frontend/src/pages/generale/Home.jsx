@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import api from '../../utils/api'
 
 import '../../styles/reels.css'
@@ -11,6 +12,7 @@ import DemoNotice from '../../components/DemoNotice'
 const Home = () => {
 
     const [videos, setVideos] = useState([])
+    const navigate = useNavigate()
 
     const [loading, setLoading] = useState(true)
 
@@ -42,14 +44,20 @@ const Home = () => {
                 )
 
             })
-            .catch((error) => {
+           .catch((error) => {
 
-                console.error(
-                    'Error fetching food videos:',
-                    error
-                )
+    console.error(
+        'Error fetching food videos:',
+        error
+    )
 
-            })
+    if (error.response && error.response.status === 401) {
+
+        navigate('/user/login')
+
+    }
+
+})
             .finally(() => {
 
                 setLoading(false)
