@@ -540,10 +540,30 @@ async function likeFood(req, res) {
         }
 
 
-        const food =
-            await foodModel.findById(
-                foodId
-            )
+        /*
+         * These two reads don't depend on each
+         * other, so run them at the same time
+         * instead of one after another.
+         */
+
+        const [food, isAlreadyLiked] =
+            await Promise.all([
+
+                foodModel.findById(
+                    foodId
+                ),
+
+                likeModel.findOne({
+
+                    user:
+                        user._id,
+
+                    food:
+                        foodId
+
+                })
+
+            ])
 
 
         if (!food) {
@@ -556,18 +576,6 @@ async function likeFood(req, res) {
             })
 
         }
-
-
-        const isAlreadyLiked =
-            await likeModel.findOne({
-
-                user:
-                    user._id,
-
-                food:
-                    foodId
-
-            })
 
 
      
@@ -585,30 +593,29 @@ async function likeFood(req, res) {
             })
 
 
-            await foodModel.findOneAndUpdate(
-
-                {
-                    _id:
-                        foodId,
-
-                    likeCount: {
-                        $gt: 0
-                    }
-
-                },
-
-                {
-                    $inc: {
-                        likeCount: -1
-                    }
-                }
-
-            )
-
-
             const updatedFood =
-                await foodModel.findById(
-                    foodId
+                await foodModel.findOneAndUpdate(
+
+                    {
+                        _id:
+                            foodId,
+
+                        likeCount: {
+                            $gt: 0
+                        }
+
+                    },
+
+                    {
+                        $inc: {
+                            likeCount: -1
+                        }
+                    },
+
+                    {
+                        new: true
+                    }
+
                 )
 
 
@@ -632,33 +639,43 @@ async function likeFood(req, res) {
         // LIKE
         // =========================================
 
-        await likeModel.create({
+        /*
+         * Creating the like record and
+         * incrementing the counter don't depend
+         * on each other's result, so run them
+         * together instead of sequentially.
+         */
 
-            user:
-                user._id,
+        const [, updatedFood] =
+            await Promise.all([
 
-            food:
-                foodId
+                likeModel.create({
 
-        })
+                    user:
+                        user._id,
 
+                    food:
+                        foodId
 
-        const updatedFood =
-            await foodModel.findByIdAndUpdate(
+                }),
 
-                foodId,
+                foodModel.findByIdAndUpdate(
 
-                {
-                    $inc: {
-                        likeCount: 1
+                    foodId,
+
+                    {
+                        $inc: {
+                            likeCount: 1
+                        }
+                    },
+
+                    {
+                        new: true
                     }
-                },
 
-                {
-                    returnDocument: 'after'
-                }
+                )
 
-            )
+            ])
 
 
         return res.status(200).json({
@@ -722,11 +739,30 @@ async function saveFood(req, res) {
         }
 
 
-      
-        const food =
-            await foodModel.findById(
-                foodId
-            )
+        /*
+         * These two reads don't depend on each
+         * other, so run them at the same time
+         * instead of one after another.
+         */
+
+        const [food, existingSave] =
+            await Promise.all([
+
+                foodModel.findById(
+                    foodId
+                ),
+
+                saveModel.findOne({
+
+                    user:
+                        user._id,
+
+                    food:
+                        foodId
+
+                })
+
+            ])
 
 
         if (!food) {
@@ -742,18 +778,6 @@ async function saveFood(req, res) {
 
 
      
-
-        const existingSave =
-            await saveModel.findOne({
-
-                user:
-                    user._id,
-
-                food:
-                    foodId
-
-            })
-
 
         if (existingSave) {
 
@@ -795,7 +819,7 @@ async function saveFood(req, res) {
                     },
 
                     {
-                        returnDocument: 'after'
+                        new: true
                     }
 
                 )
@@ -855,7 +879,7 @@ async function saveFood(req, res) {
                 },
 
                 {
-                    returnDocument: 'after'
+                    new: true
                 }
 
             )
