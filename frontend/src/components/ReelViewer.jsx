@@ -40,6 +40,21 @@ const ReelViewer = ({
 
 
     // =========================================
+    // PENDING LIKE / SAVE REQUESTS
+    // =========================================
+    //
+    // Prevents a rapid double-tap from firing
+    // two overlapping like/save requests for
+    // the same video.
+
+    const [isLikePending, setIsLikePending] =
+        useState(false)
+
+    const [isSavePending, setIsSavePending] =
+        useState(false)
+
+
+    // =========================================
     // CURRENT VIDEO
     // =========================================
 
@@ -238,7 +253,8 @@ const ReelViewer = ({
 
         if (
             !currentVideo ||
-            !onLike
+            !onLike ||
+            isLikePending
         ) {
 
             return
@@ -246,7 +262,17 @@ const ReelViewer = ({
         }
 
 
-        await onLike(currentVideo)
+        setIsLikePending(true)
+
+        try {
+
+            await onLike(currentVideo)
+
+        } finally {
+
+            setIsLikePending(false)
+
+        }
 
     }
 
@@ -259,7 +285,8 @@ const ReelViewer = ({
 
         if (
             !currentVideo ||
-            !onSave
+            !onSave ||
+            isSavePending
         ) {
 
             return
@@ -267,7 +294,17 @@ const ReelViewer = ({
         }
 
 
-        await onSave(currentVideo)
+        setIsSavePending(true)
+
+        try {
+
+            await onSave(currentVideo)
+
+        } finally {
+
+            setIsSavePending(false)
+
+        }
 
     }
 
@@ -499,7 +536,10 @@ const ReelViewer = ({
                                     : ''
                             }`}
                             onClick={handleLike}
-                            disabled={isDeleting}
+                            disabled={
+                                isDeleting ||
+                                isLikePending
+                            }
                             aria-label="Like"
                         >
 
@@ -546,7 +586,10 @@ const ReelViewer = ({
                                     : ''
                             }`}
                             onClick={handleSave}
-                            disabled={isDeleting}
+                            disabled={
+                                isDeleting ||
+                                isSavePending
+                            }
                             aria-label="Save"
                         >
 
