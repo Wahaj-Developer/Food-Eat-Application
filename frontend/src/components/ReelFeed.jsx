@@ -38,6 +38,23 @@ const ReelFeed = ({
 
 
     // =========================================
+    // PENDING LIKE / SAVE REQUESTS
+    // =========================================
+    //
+    // Tracks which videos currently have an
+    // in-flight like/save request, so the
+    // buttons can be disabled and a rapid
+    // double-tap can't fire two overlapping
+    // requests for the same video.
+
+    const [pendingLikes, setPendingLikes] =
+        useState(new Set())
+
+    const [pendingSaves, setPendingSaves] =
+        useState(new Set())
+
+
+    // =========================================
     // LOOPING SETUP
     // =========================================
     //
@@ -282,7 +299,30 @@ const ReelFeed = ({
             return
         }
 
-        await onLike(item)
+        if (pendingLikes.has(item._id)) {
+            return
+        }
+
+        setPendingLikes((previous) => {
+            const next = new Set(previous)
+            next.add(item._id)
+            return next
+        })
+
+        try {
+
+            await onLike(item)
+
+        } finally {
+
+            setPendingLikes((previous) => {
+                const next = new Set(previous)
+                next.delete(item._id)
+                return next
+            })
+
+        }
+
     }
 
 
@@ -296,7 +336,30 @@ const ReelFeed = ({
             return
         }
 
-        await onSave(item)
+        if (pendingSaves.has(item._id)) {
+            return
+        }
+
+        setPendingSaves((previous) => {
+            const next = new Set(previous)
+            next.add(item._id)
+            return next
+        })
+
+        try {
+
+            await onSave(item)
+
+        } finally {
+
+            setPendingSaves((previous) => {
+                const next = new Set(previous)
+                next.delete(item._id)
+                return next
+            })
+
+        }
+
     }
 
 
@@ -456,6 +519,11 @@ const ReelFeed = ({
                                         onClick={() =>
                                             handleLike(item)
                                         }
+                                        disabled={
+                                            pendingLikes.has(
+                                                item._id
+                                            )
+                                        }
                                         className={`reel-action ${
                                             item.isLiked
                                                 ? 'liked'
@@ -507,6 +575,11 @@ const ReelFeed = ({
                                         type="button"
                                         onClick={() =>
                                             handleSave(item)
+                                        }
+                                        disabled={
+                                            pendingSaves.has(
+                                                item._id
+                                            )
                                         }
                                         className={`reel-action ${
                                             item.isSaved
