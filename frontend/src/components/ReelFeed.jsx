@@ -1,8 +1,4 @@
-import React, {
-    useEffect,
-    useLayoutEffect,
-    useRef
-} from 'react'
+import React, {useEffect,useLayoutEffect,useRef,useState} from 'react'
 import { Link } from 'react-router-dom'
 import FoodViewLogo from './FoodViewLogo'
 
@@ -20,6 +16,25 @@ const ReelFeed = ({
 
     const scrollEndTimer =
         useRef(null)
+
+
+    // =========================================
+    // MUTE / UNMUTE
+    // =========================================
+    //
+    // Videos start muted so autoplay is allowed
+    // by the browser. The user can tap the sound
+    // button to turn audio on for every video.
+
+    const [isMuted, setIsMuted] =
+        useState(true)
+
+
+    const toggleMute = () => {
+
+        setIsMuted((previous) => !previous)
+
+    }
 
 
     // =========================================
@@ -231,8 +246,30 @@ const ReelFeed = ({
             return
         }
 
+        element.muted = isMuted
+
         videoRefs.current.set(position, element)
     }
+
+
+    // =========================================
+    // APPLY MUTE STATE TO ALL VIDEOS
+    // =========================================
+    //
+    // The muted property must be set imperatively
+    // on the DOM element - React's `muted` attribute
+    // only controls the initial value, not later
+    // updates.
+
+    useEffect(() => {
+
+        videoRefs.current.forEach((video) => {
+
+            video.muted = isMuted
+
+        })
+
+    }, [isMuted])
 
 
     // =========================================
@@ -329,7 +366,6 @@ const ReelFeed = ({
                             ref={setVideoRef(position)}
                             className="reel-video"
                             src={item.video}
-                            muted
                             playsInline
                             loop
                             preload="metadata"
@@ -349,6 +385,66 @@ const ReelFeed = ({
                             {/* RIGHT ACTIONS */}
 
                             <div className="reel-actions">
+
+
+                                {/* SOUND */}
+
+                                <div className="reel-action-group">
+
+                                    <button
+                                        type="button"
+                                        onClick={toggleMute}
+                                        className="reel-action"
+                                        aria-label={
+                                            isMuted
+                                                ? 'Unmute'
+                                                : 'Mute'
+                                        }
+                                    >
+
+                                        {isMuted ? (
+
+                                            <svg
+                                                width="22"
+                                                height="22"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                strokeWidth="2"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            >
+
+                                                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                                                <line x1="23" y1="9" x2="17" y2="15" />
+                                                <line x1="17" y1="9" x2="23" y2="15" />
+
+                                            </svg>
+
+                                        ) : (
+
+                                            <svg
+                                                width="22"
+                                                height="22"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                strokeWidth="2"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            >
+
+                                                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                                                <path d="M15.5 8.5a5 5 0 0 1 0 7" />
+                                                <path d="M18.5 5.5a9 9 0 0 1 0 13" />
+
+                                            </svg>
+
+                                        )}
+
+                                    </button>
+
+                                </div>
 
 
                                 {/* LIKE */}
