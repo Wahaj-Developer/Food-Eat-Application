@@ -255,51 +255,69 @@ async function getFoodItems(req, res) {
             interleaveByPartner(foodItems)
 
 
+        /*
+         * Fetch ALL of this user's likes and
+         * saves in just two queries, instead of
+         * two queries PER video. Then check
+         * membership locally with a Set - no
+         * extra database round-trips per video.
+         */
+
+        const [userLikes, userSaves] =
+            await Promise.all([
+
+                likeModel.find({
+                    user:
+                        user._id
+                }),
+
+                saveModel.find({
+                    user:
+                        user._id
+                })
+
+            ])
+
+
+        const likedFoodIds =
+            new Set(
+                userLikes.map(
+                    (like) =>
+                        like.food.toString()
+                )
+            )
+
+
+        const savedFoodIds =
+            new Set(
+                userSaves.map(
+                    (save) =>
+                        save.food.toString()
+                )
+            )
+
+
         const foodWithStatus =
-            await Promise.all(
+            mixedFoodItems.map(
+                (food) => {
 
-                mixedFoodItems.map(
-                    async (food) => {
+                    return {
 
-                        const isLiked =
-                            await likeModel.findOne({
+                        ...food.toObject(),
 
-                                user:
-                                    user._id,
+                        isLiked:
+                            likedFoodIds.has(
+                                food._id.toString()
+                            ),
 
-                                food:
-                                    food._id
-
-                            })
-
-
-                        const isSaved =
-                            await saveModel.findOne({
-
-                                user:
-                                    user._id,
-
-                                food:
-                                    food._id
-
-                            })
-
-
-                        return {
-
-                            ...food.toObject(),
-
-                            isLiked:
-                                !!isLiked,
-
-                            isSaved:
-                                !!isSaved
-
-                        }
+                        isSaved:
+                            savedFoodIds.has(
+                                food._id.toString()
+                            )
 
                     }
-                )
 
+                }
             )
 
 
