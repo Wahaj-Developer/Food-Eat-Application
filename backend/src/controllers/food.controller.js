@@ -156,6 +156,85 @@ async function getUploadCredentials(req, res) {
 
 
 
+/**
+ * =========================================
+ * INTERLEAVE BY PARTNER
+ * =========================================
+ *
+ * Takes a flat, newest-first list of food
+ * items and mixes them so consecutive
+ * videos come from different stores
+ * instead of clustering by upload batch.
+ *
+ * Round-robin: one video from each store
+ * per round, going round after round until
+ * every video has been placed. Each store's
+ * own videos stay newest-first relative to
+ * each other.
+ */
+
+function interleaveByPartner(items) {
+
+    const groups = new Map()
+
+    const partnerOrder = []
+
+
+    items.forEach((item) => {
+
+        const partnerId =
+            item.foodPartner?.toString?.() ||
+            String(item.foodPartner)
+
+
+        if (!groups.has(partnerId)) {
+
+            groups.set(partnerId, [])
+            partnerOrder.push(partnerId)
+
+        }
+
+
+        groups.get(partnerId).push(item)
+
+    })
+
+
+    const interleaved = []
+
+    let remaining = items.length
+
+
+    while (remaining > 0) {
+
+        for (const partnerId of partnerOrder) {
+
+            const queue =
+                groups.get(partnerId)
+
+
+            if (queue.length > 0) {
+
+                interleaved.push(
+                    queue.shift()
+                )
+
+                remaining -= 1
+
+            }
+
+        }
+
+    }
+
+
+    return interleaved
+
+}
+
+
+
+
 async function getFoodItems(req, res) {
 
     try {
@@ -172,10 +251,14 @@ async function getFoodItems(req, res) {
                 })
 
 
+        const mixedFoodItems =
+            interleaveByPartner(foodItems)
+
+
         const foodWithStatus =
             await Promise.all(
 
-                foodItems.map(
+                mixedFoodItems.map(
                     async (food) => {
 
                         const isLiked =
