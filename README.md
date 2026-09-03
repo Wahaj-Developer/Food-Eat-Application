@@ -73,7 +73,7 @@ React components.
 
 You can explore the application using the live demo below.
 
-🔗 **Live Demo:** https://your-demo-url.com
+🔗 **Live Demo:** https://food-eat-web-application.vercel.app/user/login
 
 ------------------------------------------------------------------------
 
