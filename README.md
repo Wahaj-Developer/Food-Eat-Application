@@ -361,3 +361,89 @@ Food-App
 -   ImageKit Node SDK
 
 ------------------------------------------------------------------------
+
+
+## Frontend
+
+-   React 19
+-   Vite
+-   React Router DOM
+-   Axios
+-   CSS
+-   CSS Variables / Theme System
+-   IntersectionObserver API
+
+------------------------------------------------------------------------
+
+## Development Tools
+
+-   VS Code
+-   Postman
+-   MongoDB Compass
+-   Git
+-   GitHub
+-   npm
+
+------------------------------------------------------------------------
+
+## Architecture Pattern
+
+The application follows a separated frontend/backend architecture.
+
+``` text
+Frontend
+   │
+   │ Axios
+   ▼
+REST API Routes
+   │
+   ▼
+Controllers
+   │
+   ├── Authentication
+   ├── Food Operations
+   └── Food Partner Operations
+   │
+   ▼
+Models / Services
+   │
+   ├── MongoDB
+   └── ImageKit
+```
+
+This separation keeps authentication, business logic, database models,
+cloud storage, and UI responsibilities organized independently.
+
+------------------------------------------------------------------------
+
+# 📡 API Documentation
+
+The backend exposes RESTful APIs for authentication, food videos, likes,
+saves, and food partner profiles.
+
+------------------------------------------------------------------------
+
+# 🔐 Authentication APIs
+
+  --------------------------------------------------------------------------------------------
+  Method       Endpoint                           Description         Authentication
+  ------------ ---------------------------------- ------------------- ------------------------
+  POST         `/api/auth/user/register`          Register a new user ❌
+
+  POST         `/api/auth/user/login`             Login an existing   ❌
+                                                  user                
+
+  POST         `/api/auth/user/logout`            Logout current user ❌
+
+  POST         `/api/auth/foodpartner/register`   Register a food     ❌
+                                                  partner             
+
+  POST         `/api/auth/foodpartner/login`      Login a food        ❌
+                                                  partner             
+
+  POST         `/api/auth/foodpartner/logout`     Logout current food ❌
+                                                  partner             
+  --------------------------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
